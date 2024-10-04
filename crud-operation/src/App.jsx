@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { getTodos } from './api/todos';
 
 const mockTodos = [
   {
@@ -21,6 +22,17 @@ function App() {
   useEffect(() => {
     setError(false);
     setTodosLoading(true);
+
+    getTodos()
+    .then(todos => {
+      setTodosLoading(false);
+      setTodos(todos)
+    })
+
+    .catch(() => {
+      setError(true);
+      setTodosLoading(false);
+    });
   }, []);
 
   return (
