@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getTodos } from './api/todos';
-
+import { getNormalizedTodos } from './utils/get-normilize-todos';
 const mockTodos = [
   {
     id: 1,
@@ -15,7 +15,8 @@ const mockTodos = [
 ];
 
 function App() {
-  const [todos, setTodos] = useState(null);
+  const [todosIds, setTodosIds] = useState(null);
+  const [todosById, setTodosById] = useState({});
   const [isTodosLoading, setTodosLoading] = useState(false);
   const [isError, setError] = useState(false);
   
@@ -25,8 +26,11 @@ function App() {
 
     getTodos()
     .then(todos => {
+      const [ids, byIds] = getNormalizedTodos(todos);
+
       setTodosLoading(false);
-      setTodos(todos)
+      setTodosIds(ids);
+      setTodosById(byIds);
     })
 
     .catch(() => {
@@ -40,8 +44,8 @@ function App() {
       <h1>Список задач</h1>
       { isError && <p>Произошла ошибка</p> }
       { isTodosLoading && <p>Загружаем спиок задач</p> }
-      { todos && todos.map(todo => (
-        <p key={todo.id}>{todo.title}</p>
+      { todosIds && todosIds.map(id => (
+        <p key={id}>{todosById[id].title}</p>
         
       )) }
    </div>
